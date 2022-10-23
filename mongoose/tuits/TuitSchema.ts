@@ -1,10 +1,19 @@
+/**
+ * @file Implements mongoose schema for tuits
+ */
 import mongoose from "mongoose";
 import Tuit from "../../models/tuits/Tuit";
 
-const TuitSchema = new mongoose.Schema({
-    tuit: String,
+/**
+ * @typedef TuitSchema Represents tuits
+ * @property {string} tuit Content of the tuit
+ * @property {Date} postedOn When tuit is posted
+ * @property {ObjectId} postedBy Id of the user who posted the tuit.
+ */
+const TuitSchema = new mongoose.Schema<Tuit>({
+    tuit: {type: String, required: true},
     postedOn: {type: Date, default: Date.now},
-    PostedBy: {
+    postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserModel'
     }
