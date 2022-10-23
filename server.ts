@@ -15,8 +15,8 @@ const app = express();
 
 dotenv.config();
 app.use(cors());
-const MONGODB_URI = "mongodb://localhost:27017/tuiter";
-mongoose.connect(process.env.MONGODB_URI || MONGODB_URI);
+const MONGODB_URI = "mongodb+srv://abdul:12345@tuiter.0utf76u.mongodb.net/tuiter";
+mongoose.connect(MONGODB_URI);
 
 // configure HTTP body parser
 app.use(bodyParser.json());
