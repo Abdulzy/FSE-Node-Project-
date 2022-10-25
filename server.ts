@@ -15,7 +15,7 @@ const app = express();
 
 dotenv.config();
 app.use(cors());
-const MONGODB_URI = "mongodb+srv://abdul:12345@tuiter.0utf76u.mongodb.net/tuiter";
+const MONGODB_URI = "mongodb+srv://abdul:12345@tuiter.0utf76u.mongodb.net/tuiter?retryWrites=true&w=majority";
 mongoose.connect(MONGODB_URI);
 
 // configure HTTP body parser
