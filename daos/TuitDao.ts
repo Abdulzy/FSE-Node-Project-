@@ -43,7 +43,7 @@ export default class TuitDao implements TuitDaoI {
      * database
      */
     findTuitsByUser = async (uid: string): Promise<Tuit[]> =>
-        TuitModel.find({postedBy: uid});
+        TuitModel.find({postedBy: uid}).populate("postedBy").exec();
 
     /**
      * Uses TuitModel to retrieve single tuit document from tuits collection
@@ -86,4 +86,12 @@ export default class TuitDao implements TuitDaoI {
      */
     deleteTuit = async (tid: string): Promise<any> =>
         TuitModel.deleteOne({_id: tid});
+
+    /**
+     * Removes tuit that matches the content
+     * @param {string} content Tuit's content
+     * @returns Promise To be notified when tuit is removed from the database
+     */
+    deleteTuitByContent = async (content: string): Promise<any> =>
+        TuitModel.deleteOne({tuit: content})
 }
