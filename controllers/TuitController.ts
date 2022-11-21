@@ -85,9 +85,28 @@ export default class TuitController implements TuitControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON containing the tuit that matches the user ID
      */
-    findTuitById = (req: Request, res: Response) =>
-        TuitController.tuitDao.findTuitById(req.params.tid)
-            .then((tuit: Tuit) => res.json(tuit));
+    findTuitById = (req: Request, res: Response) => {
+        // @ts-ignore
+        const profile = req.session['profile'];
+        if (profile) {
+            // @ts-ignore
+            const userId = profile._id;
+            TuitController.tuitDao.findTuitById(req.params.tid)
+                .then( async (tuit: Tuit) => {
+                    if (tuit) {
+                        const fetchTuits = await TuitController.tuitService
+                            .fetchTuitsForLikesDisLikeOwn(userId, [tuit]);
+                        res.json(fetchTuits[0]);
+                    } else {
+                        res.json(tuit);
+                    }
+                });
+        } else {
+            TuitController.tuitDao.findTuitById(req.params.tid)
+                .then((tuit: Tuit) => res.json(tuit));
+        }
+    }
+
 
     /**
      * Retrieves all tuits from the database for a particular user and returns
@@ -143,8 +162,12 @@ export default class TuitController implements TuitControllerI {
         let userId = req.params.uid === "me" && req.session['profile'] ?
             // @ts-ignore
             req.session['profile']._id : req.params.uid;
-        TuitController.tuitDao.createTuitByUser(userId, req.body)
-            .then((tuit: Tuit) => res.json(tuit))
+        if (userId === undefined || userId === null) {
+            res.sendStatus(403);
+        } else {
+            TuitController.tuitDao.createTuitByUser(userId, req.body)
+                .then((tuit: Tuit) => res.json(tuit))
+        }
     }
 
     /**
